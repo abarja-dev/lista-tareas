@@ -1,0 +1,17 @@
+{% extends "tareas/base.html" %}
+
+{% block title %}Crear nueva tarea{% endblock %}
+
+{% block content %}
+    <h1>Crear nueva tarea</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="boton">Guardar</button>
+    </form>
+
+    <p style="margin-top: 1em;">
+        <a href="{% url 'lista_tareas' %}" class="boton">Volver a la lista</a>
+    </p>
+{% endblock %}

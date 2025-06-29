@@ -1,0 +1,70 @@
+<!-- tareas/templates/tareas/principal.html -->
+{% extends "tareas/base.html" %}
+
+{% block title %}Mis tareas{% endblock %}
+
+{% block content %}
+<header>
+  <h1>Mis tareas</h1>
+  <nav>
+    <form method="POST" action="{% url 'logout' %}" style="display: inline;">
+      {% csrf_token %}
+      <button type="submit">Cerrar sesión</button>
+    </form>
+    <a href="{% url 'eliminar_usuario' %}" style="margin-left: 1em; color: red;">
+      Eliminar mi cuenta
+    </a>
+  </nav>
+</header>
+
+<main>
+  {% if messages %}
+    <ul>
+      {% for message in messages %}
+        <li style="color: white; font-weight: bold;">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <a href="{% url 'crear_tarea' %}">Crear nueva tarea</a>
+
+  <form method="get" style="margin-top: 1em;">
+    <input type="text" name="buscar" placeholder="Buscar título…" value="{{ buscar }}">
+
+    <label style="margin-left: 1em;">
+      <input type="checkbox" name="mostrar" value="incompletas"
+        {% if mostrar == 'incompletas' %}checked{% endif %}>
+      Solo incompletas
+    </label>
+
+    <label style="margin-left: 1em;">
+      Ordenar por:
+      <select name="orden">
+        <option value="estado" {% if orden_actual == 'estado' %}selected{% endif %}>Estado</option>
+        <option value="fecha" {% if orden_actual == 'fecha' %}selected{% endif %}>Fecha</option>
+      </select>
+    </label>
+
+    <button type="submit" style="margin-left: 1em;">Aplicar</button>
+  </form>
+
+  <ul>
+    {% for tarea in tareas %}
+      <li>
+        {{ tarea.titulo }} -
+        {% if tarea.completo %}
+          ✅
+          <a href="{% url 'toggle_completo' tarea.pk %}">Marcar como incompleta</a>
+        {% else %}
+          ❌
+          <a href="{% url 'toggle_completo' tarea.pk %}">Marcar como completa</a>
+        {% endif %}
+        <a href="{% url 'editar_tarea' tarea.pk %}">Editar</a>
+        <a href="{% url 'eliminar_tarea' tarea.pk %}">Eliminar</a>
+      </li>
+    {% empty %}
+      <li>No hay tareas aún.</li>
+    {% endfor %}
+  </ul>
+</main>
+{% endblock %}
